@@ -11,6 +11,7 @@ class Address:
          self.country = country
          self.pincode = pincode
 
+
 #Customer class holds the details of customer
 class Customer(Address):
     def __init__ (self, name: str, address: str, salesTax: float):
@@ -18,12 +19,13 @@ class Customer(Address):
         self.address = address
         self.salesTax = salesTax
 
+
 #Product class holds the details of each product
 class Product:
     def __init__(self, productID: int, name: str, description: str, price: int):
         self.name = name
         self.productID = productID
-        self.price = price
+        self.price = price 
         self.description = description
     
     def inventoryLookup():
@@ -31,7 +33,8 @@ class Product:
             csv_reader = csv.reader(csv_file)
             product_rows = list(csv_reader)
             csv_file.close()
-            
+        
+        #Printing the product name and quantity remaining in inventory.
         for i in product_rows:
             print(i[1]+" "+i[4])
         return 0
@@ -41,11 +44,37 @@ class Product:
             csv_reader = csv.reader(csv_file)
             product_rows = list(csv_reader)
             csv_file.close()
-            
-        for i in product_rows:
-            if(i[4]<5):
-                print(i[1]+" "+i[4])
-        return 0
+
+        dd=[]
+        for i in product_rows[1:]:
+            if(int(i[4])<10):
+                dd.append("ID"+i[0]+" "+i[1]+" "+i[4]+" needs to be restock")
+
+        return dd
+
+    def inventorylookup_by_id(a):
+        dd=[]
+        if (a==None):
+            print("\n Input is null")
+            return ""
+        with open('products.csv') as csv_file:
+            csv_reader = csv.reader(csv_file)
+            product_rows = list(csv_reader)
+            csv_file.close()
+
+        
+                
+        for i in product_rows[1:]:
+                if(int(i[0])==a):
+                    dummy_string=i[0]+" "+i[1]+" "+i[2]
+                    dd.append(dummy_string)
+
+        return dd            
+
+
+
+
+
 #Invoice class holds the methods for generating invoice
 class Invoice(Customer,Product):
     
@@ -80,10 +109,11 @@ class Invoice(Customer,Product):
         df.loc[self.product.productID - 1,"quantity"] = int(df.loc[self.product.productID - 1,"quantity"]) - 1
         df.to_csv("products.csv", index=False)
         return row
+
             
 #Driver code to initiate the operations
 if __name__ == "__main__":
-    input1 = int(input("Select any option from below:: \n 1. Generate Invoice \n 2. Inventory Lookup \n ---> "))
+    input1 = int(input("Select any option from below:: \n 1. Generate Invoice \n 2. Inventory Lookup \n 3. get_lowerStockItems \n 4. Inventort Lookup by id\n ---> "))
     if input1 == 1:
         while True:
             try:
@@ -131,7 +161,28 @@ if __name__ == "__main__":
         inv1.generateInvoice()
 
     elif  input1 ==2:
-        
         Product.inventoryLookup()
+
+    elif input1==3:
+        dd=[]
+        dd=Product.get_lowerStockItems()
+        for i in dd:
+            print(i)
+    elif input1==4:
+        id_input=int(input("Enter the ID of the product for lookup: "))
+        dd=[]
+        dd=Product.inventorylookup_by_id(id_input)
+        if(dd==[]):
+            print("Invalid id")
+        print(dd)    
+
     else:
         print("Enter valid input and try again!!")
+
+
+
+
+
+
+
+
