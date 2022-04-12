@@ -20,8 +20,30 @@ class TestMethods(unittest.TestCase):
         prod =  invoice.Product(1, "TV1", "This is a TV1", 40)
         inv =  invoice.Invoice(cust, prod, 0)
         print(inv.generateInvoice())
-        
+
+    def test_get_lowerstockitems_lookup_for_refill_stocks(self):
+        dd=invoice.Product.get_lowerStockItems()
+        ###creating a list to get the id's of the stocks which aare need to be refill
+        dd1=[]
+        for i in dd:
+            dd1.append(i[2])
+        self.assertCountEqual(dd1,['1','2'])
+
+    def test_inventorylookup_by_id_if_id_outofbound(self):
+        dd=invoice.Product.inventorylookup_by_id(6)
+        self.assertCountEqual(dd,[])
+
+    def test_inventorylookup_by_id_if_id_null(self):
+        dd=invoice.Product.inventorylookup_by_id(None)
+        self.assertTrue(dd,"")    
+
         
         
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=2)
+
+
+
+
+
+
