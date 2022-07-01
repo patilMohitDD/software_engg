@@ -53,25 +53,67 @@ class Product:
         return dd
 
     def inventorylookup_by_id(a):
-        dd=[]
-        if (a==None):
-            print("\n Input is null")
-            return ""
         with open('products.csv') as csv_file:
             csv_reader = csv.reader(csv_file)
             product_rows = list(csv_reader)
             csv_file.close()
+        dd=[]
+        '''
 
-        
+        if(a!=None and len(a)==1 and type(a)==str and (32<=ord(a)<=47 or 58<=ord(a)<=64 or 91<=ord(a)<=96 or 123<=ord(a)<=126)):
+            print("Id will not be a special character,,,, Invalid")
+            return -1
+        '''    
+
+        if (a==None):
+            print("\n Id Input is null")
+            return dd
+
+        if(type(a)==str):
+            print("Id Input is given as String, Invalid")
+            return 'true'        
                 
         for i in product_rows[1:]:
                 if(int(i[0])==a):
                     dummy_string=i[0]+" "+i[1]+" "+i[2]
                     dd.append(dummy_string)
+        print(dd)            
+        return dd   
 
-        return dd            
+    def inventoryLookup_by_name(a):
+        with open('products.csv') as csv_file:
+            csv_reader = csv.reader(csv_file)
+            product_rows = list(csv_reader)
+            csv_file.close()
+        dd=[]
+        
+        '''
+        if(32<=ord(a)<=47 or 58<=ord(a)<=64 or 91<=ord(a)<=96 or 123<=ord(a)<=126):
+            print("Input string is a special character")
+            return -1
+        '''    
+        if(type(a)==str and a!=None and len(a)==1 and (32<=ord(a)<=47 or 58<=ord(a)<=64 or 91<=ord(a)<=96 or 123<=ord(a)<=126)):
+            print("Input string is a special character... Invalid")
+            return -1
 
+        if (a==None):
+            print("\n string Input is null, needs to be string")
+            return dd
+        if(type(a)==int):
+            print("\n string Input is Integer, needs to be string")
+            return 'int'
 
+        for i in product_rows[1:]:
+            if(a==i[1]):
+                dummy_string=i[0]+" "+i[1]+" "+i[2]
+                dd.append(dummy_string)
+        if(dd==[]):
+            print("String not present in products")   
+            return 'false'
+        print(dd)         
+        return dd        
+
+                    
 
 
 
@@ -85,12 +127,21 @@ class Invoice(Customer,Product):
     
 #The function that generates the invoice and stored it in invoices.csv
     def generateInvoice(self):
-        if(self.customer.name=="" or self.customer.address=="" or self.delivery==None or self.product.name=="" or self.product.price==None or self.customer.salesTax == None):
-            print("invalid input please try again!!")
+        if(self.customer.name=="" and self.customer.address=="" and self.delivery==None or self.product.name=="" and self.product.price==None and self.customer.salesTax == None):
+            print("entered this ")
+            print("invalid input....allinfromation is all empty try again!!")
             return ""
+
         if((isinstance(self.customer.name, str))== False or (isinstance(self.customer.address, str))== False or (isinstance(self.delivery, int))== False or (isinstance(self.product.name, str)) == False or (isinstance(self.product.price, int)) == False or (isinstance(self.customer.salesTax, int))):
-            print("invalid input please try again!!")
-            return ""
+            print("not entered this")
+            print("invalid datatypes of the input... please try again!!")
+            return ""    
+
+
+
+
+
+
         #reading the number of entries in the file to get the count of invoices
         with open('invoices.csv', 'r') as csvfile:
             csvwriter = csv.reader(csvfile)
@@ -113,7 +164,7 @@ class Invoice(Customer,Product):
             
 #Driver code to initiate the operations
 if __name__ == "__main__":
-    input1 = int(input("Select any option from below:: \n 1. Generate Invoice \n 2. Inventory Lookup \n 3. get_lowerStockItems \n 4. Inventort Lookup by id\n ---> "))
+    input1 = int(input("Select any option from below:: \n 1. Generate Invoice \n 2. Inventory Lookup \n 3. get_lowerStockItems \n 4. Inventory Lookup by id\n 5. Inventory lookup by name---> "))
     if input1 == 1:
         while True:
             try:
@@ -170,11 +221,13 @@ if __name__ == "__main__":
             print(i)
     elif input1==4:
         id_input=int(input("Enter the ID of the product for lookup: "))
-        dd=[]
         dd=Product.inventorylookup_by_id(id_input)
         if(dd==[]):
             print("Invalid id")
-        print(dd)    
+        print(dd)
+    elif input1==5:
+        id_input=str(input("Enter the name of the product for lookup: "))
+        dd=Product.inventoryLookup_by_name(id_input)
 
     else:
         print("Enter valid input and try again!!")
